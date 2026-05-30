@@ -1,0 +1,29 @@
+{
+  "configurations": [
+    {
+      "name": "macos-clang-arm64",
+      "includePath": [
+        "${workspaceFolder}/**"
+      ],
+      "macFrameworkPath": [
+        "/System/Library/Frameworks",
+        "/Library/Frameworks",
+        "${command:cmake.buildKit}"
+      ],
+      "defines": [
+        "GL_SILENCE_DEPRECATION"
+      ],
+      "compilerPath": "/usr/bin/clang",
+      "cStandard": "c17",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "macos-clang-arm64",
+      "compilerArgs": [
+        "-framework",
+        "OpenGL",
+        "-framework",
+        "GLUT"
+      ]
+    }
+  ],
+  "version": 4
+}

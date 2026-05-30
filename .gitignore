@@ -1,0 +1,11 @@
+# Build output
+build/
+*.o
+*.out
+triangle
+
+# Claude Code (personal)
+.claude/
+
+# macOS
+.DS_Store
