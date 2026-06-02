@@ -2,6 +2,16 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Create Debug Build Directory",
+      "type": "shell",
+      "command": "mkdir",
+      "args": [
+        "-p",
+        "${workspaceFolder}/build/Debug"
+      ],
+      "problemMatcher": []
+    },
+    {
       "label": "Build OpenGL",
       "type": "shell",
       "command": "clang++",
@@ -13,6 +23,8 @@
         "-framework", "GLUT",
         "-o", "${workspaceFolder}/build/Debug/outDebug"
       ],
+      "dependsOn": "Create Debug Build Directory",
+      "dependsOrder": "sequence",
       "group": {
         "kind": "build",
         "isDefault": true
