@@ -1,0 +1,22 @@
+﻿  tanningKitty.cpp
+C:\TanningKitty\TanningKitty\tanningKitty.cpp(40,18): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\TanningKitty\TanningKitty\tanningKitty.cpp(41,18): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\TanningKitty\TanningKitty\tanningKitty.cpp(64,15): warning C4244: '인수': 'int'에서 'GLfloat'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\TanningKitty\TanningKitty\tanningKitty.cpp(65,15): warning C4244: '인수': 'int'에서 'GLfloat'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\TanningKitty\TanningKitty\tanningKitty.cpp(66,15): warning C4244: '인수': 'int'에서 'GLfloat'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\TanningKitty\TanningKitty\tanningKitty.cpp(72,18): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\TanningKitty\TanningKitty\tanningKitty.cpp(73,18): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\TanningKitty\TanningKitty\tanningKitty.cpp(204,18): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\TanningKitty\TanningKitty\tanningKitty.cpp(205,18): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\TanningKitty\TanningKitty\tanningKitty.cpp(376,21): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\TanningKitty\TanningKitty\tanningKitty.cpp(377,25): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\TanningKitty\TanningKitty\tanningKitty.cpp(381,23): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\TanningKitty\TanningKitty\tanningKitty.cpp(384,22): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\TanningKitty\TanningKitty\tanningKitty.cpp(385,22): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\TanningKitty\TanningKitty\tanningKitty.cpp(386,22): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\TanningKitty\TanningKitty\tanningKitty.cpp(389,22): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\TanningKitty\TanningKitty\tanningKitty.cpp(390,22): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\TanningKitty\TanningKitty\tanningKitty.cpp(391,22): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\TanningKitty\TanningKitty\tanningKitty.cpp(424,17): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\TanningKitty\TanningKitty\tanningKitty.cpp(425,17): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  TanningKitty.vcxproj -> C:\TanningKitty\x64\Debug\TanningKitty.exe

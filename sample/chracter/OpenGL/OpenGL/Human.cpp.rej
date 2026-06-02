@@ -1,0 +1,43 @@
+diff a/openGL/OpenGL/Human.cpp b/openGL/OpenGL/Human.cpp	(rejected hunks)
+@@ -53,6 +53,41 @@
+ 	glViewport(0, 0, w, h); // set viewport (drawing area) to entire window
+ }
+ 
++void createHalfSphere(GLfloat x, GLfloat y, GLfloat z, GLfloat radius)
++{
++	/* function createHalfSphere()
++	구의 중심 x, y, z 좌표를 받아 반구를 만드는 함수
++	x : 반구의 중심 x 좌표
++	y : 반구의 중심 y 좌표
++	z : 반구의 중심 z 좌표
++	raidus : 반구의 반지름
++	*/
++	GLfloat angley;  //y축 값을 구하기 위한 각도
++	GLfloat nexty;  //다음 y축 값을 구하기 위한 각도
++	GLfloat anglex;  //x, y축 값을 구하기 위한 각도
++
++	glColor3ub(136, 206, 250);  //반구의 색 지정
++	glBegin(GL_QUAD_STRIP);
++	for (angley = 0.0f; angley <= (0.5f*GL_PI); angley += ((0.5f*GL_PI) / 8.0f))  //반구만 그려야 하므로 0.5곱함
++	{
++		y = radius*sin(angley);     //y축 값 계산
++		nexty = angley + ((0.5f*GL_PI) / 8.0f);  //다음 angley값 저장
++		for (anglex = 0.0f; anglex < (2.0f*GL_PI); anglex += (GL_PI / 8.0f))
++		{
++			x = radius*cos(angley)*sin(anglex);
++			z = radius*cos(angley)*cos(anglex);
++			glNormal3f(-cos(angley)*sin(anglex), -sin(angley), -cos(angley)*cos(anglex)); //반구의 안쪽으로 normal 벡터 생성
++			glVertex3f(x, y, z);
++
++			x = radius*cos(nexty)*sin(anglex);
++			z = radius*cos(nexty)*cos(anglex);
++			glNormal3f(-cos(nexty)*sin(anglex), -sin(nexty), -cos(nexty)*cos(anglex));
++			glVertex3f(x, radius*sin(nexty), z);
++		}
++	}
++	glEnd();
++}
++
+ //----------------------------------------------------------------------
+ // Draw one snowmen (at the origin)
+ //

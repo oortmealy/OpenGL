@@ -1,0 +1,9 @@
+﻿  HumanParts.cpp
+  loadTexture.cpp
+C:\Users\Admin\Desktop\3학년2학기자료\_컴그 프로젝트\20222394_설정원_컴퓨터그래픽스\GraphicsTest\GraphicsTest\HumanParts.cpp(82,22): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Admin\Desktop\3학년2학기자료\_컴그 프로젝트\20222394_설정원_컴퓨터그래픽스\GraphicsTest\GraphicsTest\HumanParts.cpp(83,22): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Admin\Desktop\3학년2학기자료\_컴그 프로젝트\20222394_설정원_컴퓨터그래픽스\GraphicsTest\GraphicsTest\HumanParts.cpp(87,23): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  main.cpp
+  SceneNode.cpp
+  코드를 생성하고 있습니다...
+  GraphicsTest.vcxproj -> C:\Users\Admin\Desktop\3학년2학기자료\_컴그 프로젝트\20222394_설정원_컴퓨터그래픽스\GraphicsTest\x64\Debug\GraphicsTest.exe
