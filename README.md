@@ -78,3 +78,8 @@ clang++ -std=c++17 *.cpp -framework OpenGL -framework GLUT -o build/Debug/outDeb
 - `학번.zip`: Visual Studio 프로젝트 파일 및 `.cpp`, `.h`
 - `학번.ppt`: 함수 설명 및 실행 사례
 - 실행 결과 동영상 (캠타시아, 곰캠 등)
+
+### 제출 전 점검 사항
+- [ ] ppt에 배운 점, 느낀 점, 추가로 하고 싶었는데 못한 점 작성했나 확인
+- [ ] 데모 동영상 촬영
+- [ ] ppt 첫장에 무엇을 만들었는 지 빡 집어넣기
