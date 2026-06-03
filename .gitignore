@@ -7,5 +7,8 @@ triangle
 # Claude Code (personal)
 .claude/
 
+# Visual Studio
+.vs/
+
 # macOS
 .DS_Store
