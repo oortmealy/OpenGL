@@ -178,6 +178,10 @@ void init() {
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 
+    // glScalef로 구를 늘릴 때 법선 벡터 길이가 함께 변하므로,
+    // 조명 계산 전에 자동으로 정규화하도록 설정한다.
+    glEnable(GL_NORMALIZE);
+
     // ambient는 전체적으로 깔리는 약한 빛이다.
     // 값이 너무 낮으면 그림자진 부분이 완전히 어둡게 보일 수 있다.
     GLfloat ambient[] = {0.28f, 0.28f, 0.28f, 1.0f};
