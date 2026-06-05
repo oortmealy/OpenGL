@@ -200,16 +200,16 @@ void drawPiplup() {
 
     // ── 8. 왼쪽 눈 하이라이트 ──────────────────────────────
     glPushMatrix();
-    glTranslatef(-0.22f, 1.14f, 0.84f);
+    glTranslatef(-0.27f, 1.11f, 0.84f);
     setMaterial(BELLY, 30.0f);
-    drawEllipsoid(0.04f, 0.05f, 0.025f);
+    drawEllipsoid(0.04f, 0.051f, 0.025f);
     glPopMatrix();
 
     // ── 9. 오른쪽 눈 하이라이트 ────────────────────────────
     glPushMatrix();
-    glTranslatef(0.32f, 1.14f, 0.84f);
+    glTranslatef(0.27f, 1.11f, 0.84f);
     setMaterial(BELLY, 30.0f);
-    drawEllipsoid(0.04f, 0.05f, 0.025f);
+    drawEllipsoid(0.04f, 0.051f, 0.025f);
     glPopMatrix();
 
     // ── 10. 부리 ───────────────────────────────────────────
