@@ -25,12 +25,20 @@ extern bool  isDragging;
 extern int   lastMouseX;
 extern int   lastMouseY;
 
+// --- 컬러 팔레트 (정의는 piplup.cpp에 있음) ---
+extern const float BODY_DARK[3];   // 머리·등·날개 – 짙은 파랑
+extern const float BODY_LIGHT[3];  // 몸통 앞면·뺨 – 하늘색
+extern const float BEAK_COL[3];    // 부리·발 – 노란색
+extern const float BELLY[3];       // 배 흰점·눈 흰자·얼굴 흰자
+extern const float EYE_COL[3];     // 눈동자 – 검정
+
 // --- 그리기 유틸리티 ---
 void setColor(float r, float g, float b);
+void setMaterial(const float col[3], float shininess);
 void drawEllipsoid(float sx, float sy, float sz, float radius = 1.0f);
 void drawConeBetweenY(float radius, float height);
-void drawBeakMesh();
-void drawWingMesh();
+// 수동 메시(부리·날개)의 면 법선 계산. body.cpp/face.cpp에서 공유한다.
+void setFaceNormal(const Vec3& a, const Vec3& b, const Vec3& c);
 
 // --- 모델 / 씬 ---
 void drawPiplup();

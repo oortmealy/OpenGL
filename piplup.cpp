@@ -1,18 +1,21 @@
 #include "piplup.h"
+#include "body.h"
+#include "face.h"
 
 // ============================================================
 // 컬러 상수 (reference/README.md 컬러 시스템 기준)
+// body.cpp / face.cpp에서도 쓰이므로 piplup.h에 extern으로 공개한다.
 // ============================================================
 // 머리·등·날개 – 짙은 파랑 #006FCD
-static const float BODY_DARK[3]  = {0.00f, 0.44f, 0.80f};
+const float BODY_DARK[3]  = {0.00f, 0.44f, 0.80f};
 // 몸통 앞면·뺨 – 하늘색 (조명 과다노출 방지를 위해 원색 대비 -20%)
-static const float BODY_LIGHT[3] = {0.40f, 0.62f, 0.73f};
+const float BODY_LIGHT[3] = {0.40f, 0.62f, 0.73f};
 // 부리·발 – 노란색 #E7BA54
-static const float BEAK_COL[3]   = {0.91f, 0.73f, 0.33f};
+const float BEAK_COL[3]   = {0.91f, 0.73f, 0.33f};
 // 배 흰점·눈 흰자·얼굴 흰자 #FBFCFB
-static const float BELLY[3]      = {0.98f, 0.99f, 0.98f};
+const float BELLY[3]      = {0.98f, 0.99f, 0.98f};
 // 눈동자 – 검정 #0C0D0C
-static const float EYE_COL[3]    = {0.05f, 0.05f, 0.05f};
+const float EYE_COL[3]    = {0.05f, 0.05f, 0.05f};
 
 // ============================================================
 // 레퍼런스 기반 좌표 설계
@@ -36,7 +39,7 @@ static const float EYE_COL[3]    = {0.05f, 0.05f, 0.05f};
 
 // 삼각형 세 꼭짓점으로 면 법선을 계산하고 즉시 설정한다.
 // 수동 메시(부리, 날개)처럼 glNormal이 없는 경우에 사용한다.
-static void setFaceNormal(const Vec3& a, const Vec3& b, const Vec3& c) {
+void setFaceNormal(const Vec3& a, const Vec3& b, const Vec3& c) {
     Vec3 u = {b.x-a.x, b.y-a.y, b.z-a.z};
     Vec3 v = {c.x-a.x, c.y-a.y, c.z-a.z};
     Vec3 n = {u.y*v.z - u.z*v.y,
@@ -79,181 +82,13 @@ void drawConeBetweenY(float radius, float height) {
     glPopMatrix();
 }
 
-// 부리: 삼각뿔 형태의 직접 메시.
-// 얼굴 표면에 붙는 삼각형 밑면(z≈0) + 앞으로 튀어나온 꼭짓점(z>0)으로 구성.
-void drawBeakMesh() {
-    Vec3 vertices[] = {
-        { 0.00f,  0.20f, 0.0f},  // 0: 밑면 위쪽
-        {-0.22f, -0.10f, 0.0f},  // 1: 밑면 왼쪽 아래
-        { 0.22f, -0.10f, 0.0f},  // 2: 밑면 오른쪽 아래
-        { 0.00f,  0.04f, 0.48f}  // 3: 앞으로 돌출된 부리 끝
-    };
-    int faces[][3] = {
-        {0, 1, 3},
-        {1, 2, 3},
-        {2, 0, 3},
-        {0, 2, 1}
-    };
-    glBegin(GL_TRIANGLES);
-    for (int i = 0; i < 4; ++i) {
-        Vec3 a = vertices[faces[i][0]];
-        Vec3 b = vertices[faces[i][1]];
-        Vec3 c = vertices[faces[i][2]];
-        setFaceNormal(a, b, c);
-        glVertex3f(a.x, a.y, a.z);
-        glVertex3f(b.x, b.y, b.z);
-        glVertex3f(c.x, c.y, c.z);
-    }
-    glEnd();
-}
-
-// 날개: 납작한 삼각뿔 메시.
-// 세 외곽점 + 앞쪽으로 살짝 나온 중심점으로 입체감을 준다.
-void drawWingMesh() {
-    Vec3 vertices[] = {
-        { 0.00f,  0.50f, 0.00f},
-        {-0.30f, -0.38f, 0.00f},
-        { 0.20f, -0.52f, 0.00f},
-        { 0.00f,  0.08f, 0.20f}
-    };
-    int faces[][3] = {
-        {0, 1, 3},
-        {1, 2, 3},
-        {2, 0, 3},
-        {0, 2, 1}
-    };
-    glBegin(GL_TRIANGLES);
-    for (int i = 0; i < 4; ++i) {
-        Vec3 a = vertices[faces[i][0]];
-        Vec3 b = vertices[faces[i][1]];
-        Vec3 c = vertices[faces[i][2]];
-        setFaceNormal(a, b, c);
-        glVertex3f(a.x, a.y, a.z);
-        glVertex3f(b.x, b.y, b.z);
-        glVertex3f(c.x, c.y, c.z);
-    }
-    glEnd();
-}
-
 // ============================================================
 // 펭도리 전체 모델
+// 몸통은 body.cpp, 얼굴은 face.cpp에 분리되어 있다.
 // ============================================================
 void drawPiplup() {
-
-    // ── 1. 몸통 ────────────────────────────────────────────
-    // 몸통 중심 Y=-0.20, rx=1.00(좌우) ry=0.65(높이) rz=0.82(앞뒤)
-    glPushMatrix();
-    glTranslatef(0.0f, -0.20f, 0.0f);
-    setMaterial(BODY_DARK, 60.0f);
-    drawEllipsoid(1.00f, 0.65f, 0.82f);
-    glPopMatrix();
-
-    // ── 2. 몸통 앞면 (하늘색 배) ───────────────────────────
-    // 몸통 앞쪽(z+방향)에 납작한 하늘색 타원체를 붙인다.
-    glPushMatrix();
-    glTranslatef(0.0f, -0.22f, 0.68f);
-    setMaterial(BODY_LIGHT, 30.0f);
-    drawEllipsoid(0.70f, 0.50f, 0.10f);
-    glPopMatrix();
-
-    // ── 3. 배 흰 점 2개 ────────────────────────────────────
-    glPushMatrix();
-    glTranslatef(-0.20f, -0.05f, 0.77f);
-    setMaterial(BELLY, 30.0f);
-    drawEllipsoid(0.14f, 0.14f, 0.05f);
-    glPopMatrix();
-
-    glPushMatrix();
-    glTranslatef(0.20f, -0.05f, 0.77f);
-    setMaterial(BELLY, 30.0f);
-    drawEllipsoid(0.14f, 0.14f, 0.05f);
-    glPopMatrix();
-
-    // ── 4. 머리 ────────────────────────────────────────────
-    // 머리 중심 Y=+1.35, r≈0.95
-    glPushMatrix();
-    glTranslatef(0.0f, 1.35f, 0.0f);
-    setMaterial(BODY_DARK, 60.0f);
-    drawEllipsoid(0.95f, 0.95f, 0.87f);
-    glPopMatrix();
-
-    // ── 5. 얼굴 흰자 (흰색 얼굴 마스크) ───────────────────
-    glPushMatrix();
-    glTranslatef(0.0f, 1.18f, 0.75f);
-    setMaterial(BELLY, 30.0f);
-    drawEllipsoid(0.68f, 0.58f, 0.10f);
-    glPopMatrix();
-
-    // ── 6. 왼쪽 눈 ─────────────────────────────────────────
-    glPushMatrix();
-    glTranslatef(-0.27f, 1.08f, 0.78f);
-    setMaterial(EYE_COL, 60.0f);
-    drawEllipsoid(0.14f, 0.18f, 0.08f);
-    glPopMatrix();
-
-    // ── 7. 오른쪽 눈 ───────────────────────────────────────
-    glPushMatrix();
-    glTranslatef(0.27f, 1.08f, 0.78f);
-    setMaterial(EYE_COL, 60.0f);
-    drawEllipsoid(0.14f, 0.18f, 0.08f);
-    glPopMatrix();
-
-    // ── 8. 왼쪽 눈 하이라이트 ──────────────────────────────
-    glPushMatrix();
-    glTranslatef(-0.27f, 1.11f, 0.84f);
-    setMaterial(BELLY, 30.0f);
-    drawEllipsoid(0.04f, 0.051f, 0.025f);
-    glPopMatrix();
-
-    // ── 9. 오른쪽 눈 하이라이트 ────────────────────────────
-    glPushMatrix();
-    glTranslatef(0.27f, 1.11f, 0.84f);
-    setMaterial(BELLY, 30.0f);
-    drawEllipsoid(0.04f, 0.051f, 0.025f);
-    glPopMatrix();
-
-    // ── 10. 부리 ───────────────────────────────────────────
-    // 얼굴 표면(Z≈0.75)에서 앞으로 돌출
-    glPushMatrix();
-    glTranslatef(0.0f, 0.84f, 0.75f);
-    setMaterial(BEAK_COL, 20.0f);
-    drawBeakMesh();
-    glPopMatrix();
-
-    // ── 11. 왼쪽 날개 ──────────────────────────────────────
-    glPushMatrix();
-    glTranslatef(-0.90f, 0.00f, 0.08f);
-    glRotatef(25.0f, 0.0f, 0.0f, 1.0f);
-    glRotatef(-15.0f, 0.0f, 1.0f, 0.0f);
-    setMaterial(BODY_DARK, 60.0f);
-    drawWingMesh();
-    glPopMatrix();
-
-    // ── 12. 오른쪽 날개 ────────────────────────────────────
-    // glScalef(-1,1,1)로 x축 좌우 반전
-    glPushMatrix();
-    glTranslatef(0.90f, 0.00f, 0.08f);
-    glScalef(-1.0f, 1.0f, 1.0f);
-    glRotatef(25.0f, 0.0f, 0.0f, 1.0f);
-    glRotatef(-15.0f, 0.0f, 1.0f, 0.0f);
-    setMaterial(BODY_DARK, 60.0f);
-    drawWingMesh();
-    glPopMatrix();
-
-    // ── 13. 왼쪽 발 ────────────────────────────────────────
-    // 발 중심 Y=-1.05, 몸통 앞쪽에 위치
-    glPushMatrix();
-    glTranslatef(-0.42f, -1.05f, 0.40f);
-    setMaterial(BEAK_COL, 20.0f);
-    drawEllipsoid(0.38f, 0.16f, 0.28f);
-    glPopMatrix();
-
-    // ── 14. 오른쪽 발 ──────────────────────────────────────
-    glPushMatrix();
-    glTranslatef(0.42f, -1.05f, 0.40f);
-    setMaterial(BEAK_COL, 20.0f);
-    drawEllipsoid(0.38f, 0.16f, 0.28f);
-    glPopMatrix();
+    drawBody();
+    drawFace();
 }
 
 // ============================================================

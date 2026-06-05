@@ -2,9 +2,10 @@ CXX     = g++
 CXXFLAGS = -std=c++17 -Wall
 LDFLAGS  = -framework OpenGL -framework GLUT
 TARGET   = triangle
-SRCS     = main.cpp piplup.cpp
+SRCS     = main.cpp piplup.cpp body.cpp face.cpp
+HDRS     = piplup.h body.h face.h
 
-$(TARGET): $(SRCS) piplup.h
+$(TARGET): $(SRCS) $(HDRS)
 	$(CXX) $(CXXFLAGS) $(SRCS) -o $(TARGET) $(LDFLAGS)
 
 run: $(TARGET)
