@@ -25,6 +25,9 @@ bool isDragging = false;
 int lastMouseX = 0;
 int lastMouseY = 0;
 
+// 임시 확인용: false면 조명 없이 순색으로 렌더링한다.
+bool enableLighting = true;
+
 // 화면을 다시 그려야 할 때 GLUT가 호출하는 콜백 함수.
 // OpenGL 렌더링의 핵심 흐름은 보통 display 함수 안에 들어간다.
 void display() {
@@ -49,10 +52,12 @@ void display() {
         0.0f, 1.0f, 0.0f
     );
 
-    // 조명의 위치를 매 프레임 설정한다.
-    // w=1.0이면 위치가 있는 점광원처럼 동작한다.
-    GLfloat lightPosition[] = {3.0f, 5.0f, 5.0f, 1.0f};
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+    if (enableLighting) {
+        // 조명의 위치를 매 프레임 설정한다.
+        // w=1.0이면 위치가 있는 점광원처럼 동작한다.
+        GLfloat lightPosition[] = {3.0f, 5.0f, 5.0f, 1.0f};
+        glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+    }
 
     // 바닥 격자를 먼저 그린다.
     drawGround();
@@ -169,10 +174,14 @@ void init() {
     // 이 옵션이 없으면 뒤에 있는 면이 앞의 면 위에 그려지는 문제가 생긴다.
     glEnable(GL_DEPTH_TEST);
 
-    // 기본 조명을 켠다.
-    // 조명이 있어야 구/타원체의 입체감이 더 잘 보인다.
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
+    // 기본 조명. enableLighting=false면 임시로 조명 없이 순색만 확인한다.
+    if (enableLighting) {
+        glEnable(GL_LIGHTING);
+        glEnable(GL_LIGHT0);
+    } else {
+        glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHT0);
+    }
 
     // glColor3f로 지정한 색상이 조명 계산에 반영되게 한다.
     // 이 설정이 없으면 조명을 켰을 때 glColor3f 색이 기대처럼 안 보일 수 있다.
@@ -190,8 +199,10 @@ void init() {
     // diffuse는 표면 방향과 빛 방향에 따라 밝기가 달라지는 주된 빛이다.
     GLfloat diffuse[] = {0.85f, 0.85f, 0.85f, 1.0f};
 
-    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+    if (enableLighting) {
+        glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+    }
 }
 
 // 프로그램 시작점.

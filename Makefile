@@ -1,7 +1,7 @@
 CXX     = g++
 CXXFLAGS = -std=c++17 -Wall
 LDFLAGS  = -framework OpenGL -framework GLUT
-TARGET   = triangle
+TARGET   = piplup
 SRCS     = main.cpp piplup.cpp body.cpp face.cpp
 HDRS     = piplup.h body.h face.h
 

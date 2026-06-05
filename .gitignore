@@ -3,6 +3,7 @@ build/
 *.o
 *.out
 triangle
+piplup
 
 # Claude Code (personal)
 .claude/

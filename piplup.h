@@ -24,6 +24,7 @@ extern float rotateY;
 extern bool  isDragging;
 extern int   lastMouseX;
 extern int   lastMouseY;
+extern bool  enableLighting;
 
 // --- 컬러 팔레트 (정의는 piplup.cpp에 있음) ---
 extern const float BODY_DARK[3];   // 머리·등·날개 – 짙은 파랑

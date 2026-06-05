@@ -6,10 +6,10 @@
 // 컬러 상수 (reference/README.md 컬러 시스템 기준)
 // body.cpp / face.cpp에서도 쓰이므로 piplup.h에 extern으로 공개한다.
 // ============================================================
-// 머리·등·날개 – 짙은 파랑 #006FCD
+// 망토 – 짙은 파랑 #006FCD
 const float BODY_DARK[3]  = {0.00f, 0.44f, 0.80f};
-// 몸통 앞면·뺨 – 하늘색 (조명 과다노출 방지를 위해 원색 대비 -20%)
-const float BODY_LIGHT[3] = {0.40f, 0.62f, 0.73f};
+// 몸통 앞면·뺨 – 연한 하늘색 #88C8E3
+const float BODY_LIGHT[3] = {0.533f, 0.784f, 0.890f};
 // 부리·발 – 노란색 #E7BA54
 const float BEAK_COL[3]   = {0.91f, 0.73f, 0.33f};
 // 배 흰점·눈 흰자·얼굴 흰자 #FBFCFB
@@ -105,5 +105,7 @@ void drawGround() {
         glVertex3f( 5.0f, -1.35f, (float)i);
     }
     glEnd();
-    glEnable(GL_LIGHTING);
+    if (enableLighting) {
+        glEnable(GL_LIGHTING);
+    }
 }
