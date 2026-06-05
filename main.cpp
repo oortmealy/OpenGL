@@ -1,4 +1,5 @@
 #include "piplup.h"
+#include "face.h"
 
 // 카메라와 모델 회전에 필요한 전역 상태값들.
 // GLUT의 콜백 함수(display, keyboard, mouse 등)는 전역 함수 형태로 등록되므로,
@@ -215,6 +216,9 @@ int main(int argc, char** argv) {
 
     // OpenGL 상태 초기화.
     init();
+
+    // 머리 텍스처 로드
+    initHeadTexture("reference/head.png");
 
     // GLUT 콜백 등록.
     // 특정 이벤트가 발생하면 아래 함수들이 자동으로 호출된다.
