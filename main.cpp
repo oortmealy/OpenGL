@@ -234,8 +234,8 @@ int main(int argc, char** argv) {
     // OpenGL 상태 초기화.
     init();
 
-    // 머리 텍스처 로드
-    initHeadTexture("reference/head.png");
+    // 머리 텍스처 로드 (앞면 + 뒷면)
+    initHeadTexture("reference/head.png", "reference/head_back.png");
 
     // GLUT 콜백 등록.
     // 특정 이벤트가 발생하면 아래 함수들이 자동으로 호출된다.

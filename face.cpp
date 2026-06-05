@@ -6,20 +6,26 @@
 
 // 머리 텍스처 ID (0 = 미로드)
 static GLuint g_headTex = 0;
+static GLuint g_headBackTex = 0;
 
-void initHeadTexture(const char* path) {
+static void loadTexture(const char* path, GLuint& texId) {
     int w, h, ch;
     stbi_set_flip_vertically_on_load(1);  // OpenGL UV는 Y가 아래→위
     unsigned char* data = stbi_load(path, &w, &h, &ch, 4);
     if (!data) return;
-    glGenTextures(1, &g_headTex);
-    glBindTexture(GL_TEXTURE_2D, g_headTex);
+    glGenTextures(1, &texId);
+    glBindTexture(GL_TEXTURE_2D, texId);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // S(가로): 좌우 반전 기준을 얼굴 중심으로 맞추기 위해 MIRRORED_REPEAT 사용
+    // S(가로): 좌우 반전 기준을 중심으로 맞추기 위해 MIRRORED_REPEAT 사용
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
     stbi_image_free(data);
+}
+
+void initHeadTexture(const char* frontPath, const char* backPath) {
+    loadTexture(frontPath, g_headTex);
+    loadTexture(backPath, g_headBackTex);
 }
 
 // ── 머리 파라미터 ────────────────────────────────────────────
@@ -124,18 +130,47 @@ static void drawHead() {
         glDisable(GL_CLIP_PLANE0);
     }
 
+    if (g_headBackTex) {
+        // Pass 3: 뒤쪽 반구(로컬 z ≤ 0)를 head_back.png 텍스처로 씌움
+        GLdouble clipBack[] = {0.0, 0.0, -1.0, 0.0};  // z ≤ 0 영역만
+        glClipPlane(GL_CLIP_PLANE0, clipBack);
+        glEnable(GL_CLIP_PLANE0);
+
+        glDepthFunc(GL_LEQUAL);
+        glPolygonOffset(-1.0f, -1.0f);
+        glEnable(GL_POLYGON_OFFSET_FILL);
+
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, g_headBackTex);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+        // UV 자동 생성
+        // S: 뒤에서 봤을 때 좌우 대칭이 되도록 X 축을 반전(-1)
+        // T: 앞과 동일 (Y*0.5 + 0.5)
+        glEnable(GL_TEXTURE_GEN_S);
+        glEnable(GL_TEXTURE_GEN_T);
+        glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+        glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+        GLfloat sPlaneBack[] = {-1.0f, 0.0f, 0.0f, 0.0f};
+        GLfloat tPlaneBack[] = {0.0f, 0.5f, 0.0f, 0.5f};
+        glTexGenfv(GL_S, GL_OBJECT_PLANE, sPlaneBack);
+        glTexGenfv(GL_T, GL_OBJECT_PLANE, tPlaneBack);
+
+        static const float WHITE[] = {1.0f, 1.0f, 1.0f};
+        setMaterial(WHITE, 60.0f);
+        drawEllipsoid(HEAD_RX, HEAD_RY, HEAD_RZ);
+
+        glDisable(GL_TEXTURE_GEN_S);
+        glDisable(GL_TEXTURE_GEN_T);
+        glDisable(GL_TEXTURE_2D);
+        glDisable(GL_POLYGON_OFFSET_FILL);
+        glDepthFunc(GL_LESS);
+        glDisable(GL_CLIP_PLANE0);
+    }
+
     if (enableLighting) {
         glEnable(GL_LIGHTING);
     }
-    glPopMatrix();
-}
-
-// 얼굴 흰자(흰색 얼굴 마스크).
-static void drawFaceMask() {
-    glPushMatrix();
-    glTranslatef(0.0f, 1.18f, 0.75f);
-    setMaterial(BELLY, 30.0f);
-    drawEllipsoid(0.68f, 0.58f, 0.10f);
     glPopMatrix();
 }
 

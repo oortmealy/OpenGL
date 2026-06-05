@@ -4,5 +4,5 @@
 void drawFace();
 
 // 머리 텍스처 초기화.
-// path 예시: "reference/head.png"
-void initHeadTexture(const char* path);
+// frontPath: "reference/head.png", backPath: "reference/head_back.png"
+void initHeadTexture(const char* frontPath, const char* backPath);
