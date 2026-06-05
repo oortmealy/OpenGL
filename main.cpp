@@ -25,7 +25,7 @@ bool isDragging = false;
 int lastMouseX = 0;
 int lastMouseY = 0;
 
-// 임시 확인용: false면 조명 없이 순색으로 렌더링한다.
+// false면 조명 없이 순색으로 렌더링한다.
 bool enableLighting = true;
 
 // 화면을 다시 그려야 할 때 GLUT가 호출하는 콜백 함수.
@@ -53,9 +53,9 @@ void display() {
     );
 
     if (enableLighting) {
-        // 조명의 위치를 매 프레임 설정한다.
-        // w=1.0이면 위치가 있는 점광원처럼 동작한다.
-        GLfloat lightPosition[] = {3.0f, 5.0f, 5.0f, 1.0f};
+        // w=0.0이면 위치가 아닌 방향광으로 동작한다.
+        // 점광원보다 거리별 밝기 편차가 작아서 캐릭터 전체 색이 안정적으로 보인다.
+        GLfloat lightPosition[] = {-0.35f, 0.75f, 0.55f, 0.0f};
         glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
     }
 
@@ -192,16 +192,22 @@ void init() {
     // 조명 계산 전에 자동으로 정규화하도록 설정한다.
     glEnable(GL_NORMALIZE);
 
-    // ambient는 전체적으로 깔리는 약한 빛이다.
-    // 값이 너무 낮으면 그림자진 부분이 완전히 어둡게 보일 수 있다.
-    GLfloat ambient[] = {0.28f, 0.28f, 0.28f, 1.0f};
+    // ambient는 전체적으로 깔리는 빛이다.
+    // 방향광만 쓰면 그림자진 부분이 너무 어두워져서 약간 넉넉하게 둔다.
+    GLfloat modelAmbient[] = {0.18f, 0.18f, 0.18f, 1.0f};
+    GLfloat ambient[] = {0.36f, 0.36f, 0.36f, 1.0f};
 
     // diffuse는 표면 방향과 빛 방향에 따라 밝기가 달라지는 주된 빛이다.
-    GLfloat diffuse[] = {0.85f, 0.85f, 0.85f, 1.0f};
+    GLfloat diffuse[] = {0.72f, 0.72f, 0.72f, 1.0f};
+
+    // specular는 반짝이는 하이라이트다. 너무 세면 발/몸통 색이 날아가므로 낮춘다.
+    GLfloat specular[] = {0.24f, 0.24f, 0.22f, 1.0f};
 
     if (enableLighting) {
+        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, modelAmbient);
         glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
         glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+        glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
     }
 }
 

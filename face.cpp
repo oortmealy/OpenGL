@@ -38,6 +38,33 @@ static float headSurfaceZ(float x, float y) {
     return HEAD_RZ * sqrtf(inner);
 }
 
+static void useBaseLighting() {
+    if (!enableLighting) return;
+
+    GLfloat ambient[] = {0.36f, 0.36f, 0.36f, 1.0f};
+    GLfloat diffuse[] = {0.72f, 0.72f, 0.72f, 1.0f};
+    GLfloat specular[] = {0.24f, 0.24f, 0.22f, 1.0f};
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+}
+
+static void useStrongFaceLighting() {
+    if (!enableLighting) return;
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+
+    GLfloat ambient[] = {0.30f, 0.30f, 0.30f, 1.0f};
+    GLfloat diffuse[] = {1.00f, 1.00f, 1.00f, 1.0f};
+    GLfloat specular[] = {1.00f, 1.00f, 0.92f, 1.0f};
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+}
+
 // ── 부리 사이즈 ─────────────────────────────────────────────
 //   rx(가로 반폭) : 0.220  (= ref ~76, 눈 가로와 유사)
 //   ry(세로 반폭) : 0.220  (= ref ~76, 전체 높이 0.440)
@@ -97,6 +124,9 @@ static void drawHead() {
         glDisable(GL_CLIP_PLANE0);
     }
 
+    if (enableLighting) {
+        glEnable(GL_LIGHTING);
+    }
     glPopMatrix();
 }
 
@@ -119,14 +149,14 @@ static void drawEye(float x) {
     // 눈동자
     glPushMatrix();
     glTranslatef(x, EYE_Y, ez);
-    setMaterial(EYE_COL, 60.0f);
+    setMaterial(EYE_COL, 120.0f);
     drawEllipsoid(0.174f, 0.290f, EYE_RZ);
     glPopMatrix();
 
     // 눈 하이라이트 (눈 앞면에 평면으로 부착)
     glPushMatrix();
     glTranslatef(x * 0.92f, 1.48f, ez + EYE_RZ + 0.002f);
-    setMaterial(BELLY, 30.0f);
+    setMaterial(BELLY, 90.0f);
     drawEllipsoid(0.075f, 0.120f, 0.002f);
     glPopMatrix();
 }
@@ -146,7 +176,7 @@ static void drawBeak() {
 
     glPushMatrix();
     glTranslatef(0.0f, BEAK_Y, bz);
-    setMaterial(BEAK_COL, 20.0f);
+    setMaterial(BEAK_COL, 95.0f);
     drawEllipsoid(BEAK_RX, 0.220f, BEAK_RZ);  // rx(가로), ry(세로), rz(돌출 깊이)
 
     // 윗/아랫부리 경계선: y=0 평면의 앞면 호
@@ -162,7 +192,9 @@ static void drawBeak() {
     }
     glEnd();
     glLineWidth(1.0f);
-    glEnable(GL_LIGHTING);
+    if (enableLighting) {
+        glEnable(GL_LIGHTING);
+    }
 
     glPopMatrix();
 }
@@ -172,6 +204,8 @@ static void drawBeak() {
 // ============================================================
 void drawFace() {
     drawHead();
+    useStrongFaceLighting();
     drawEyes();
     drawBeak();
+    useBaseLighting();
 }

@@ -6,8 +6,8 @@
 // 컬러 상수 (reference/README.md 컬러 시스템 기준)
 // body.cpp / face.cpp에서도 쓰이므로 piplup.h에 extern으로 공개한다.
 // ============================================================
-// 망토 – 짙은 파랑 #006FCD
-const float BODY_DARK[3]  = {0.00f, 0.44f, 0.80f};
+// 망토 – 짙은 파랑 #0271D5 (reference/head.png 파랑 영역)
+const float BODY_DARK[3]  = {0.008f, 0.443f, 0.835f};
 // 몸통 앞면·뺨 – 연한 하늘색 #88C8E3
 const float BODY_LIGHT[3] = {0.533f, 0.784f, 0.890f};
 // 부리·발 – 노란색 #E7BA54
