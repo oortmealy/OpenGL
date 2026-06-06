@@ -28,11 +28,11 @@ OpenGL을 사용한 3D 가상 인체 모델링 및 시각화 프로젝트
 ## 요구사항
 
 ### 구현 기능
-- [ ] 3D 인체 모델링 (가능한 사실적으로)
-- [ ] 텍스처 매핑을 통한 실감나는 시각화
-- [ ] 마우스 드래깅으로 3D rotation
-- [ ] `a` 키: zoom-in
-- [ ] `z` 키: zoom-out
+- [x] 3D 인체 모델링 (가능한 사실적으로)
+- [x] 텍스처 매핑을 통한 실감나는 시각화
+- [x] 마우스 드래깅으로 3D rotation
+- [x] `a` 키: zoom-in
+- [x] `z` 키: zoom-out
 
 ### 제약 조건
 - 모든 모델링 요소는 3D 객체
@@ -54,10 +54,23 @@ glutSolidIcosahedron()
 
 ```
 OpenGL/
-├── main.cpp          # 메인 진입점
+├── main.cpp          # 메인 진입점, GLUT 콜백 및 카메라/입력 처리
+├── piplup.cpp        # 공통 유틸(색상 상수, drawEllipsoid 등), drawPiplup / drawGround
+├── piplup.h
+├── body.cpp          # 몸통·날개·다리·발 메시 생성 및 drawBody
+├── body.h
+├── face.cpp          # 머리·눈·부리 및 텍스처 매핑, drawFace / initHeadTexture
+├── face.h
+├── stb_image.h       # PNG 로딩 라이브러리 (헤더 전용)
+├── Makefile          # 터미널 빌드 설정
+├── reference/        # 텍스처 이미지 및 레퍼런스 사진
+│   ├── head.png          # 머리 앞면 텍스처
+│   ├── head_back.png     # 머리 뒷면 텍스처
+│   └── ref_*.png         # 모델링 레퍼런스 이미지
 ├── .vscode/          # VSCode 빌드 설정 (macOS)
 │   ├── tasks.json
 │   ├── launch.json
+│   ├── settings.json
 │   └── c_cpp_properties.json
 ├── build/            # 컴파일 결과물 (git 제외)
 └── README.md
