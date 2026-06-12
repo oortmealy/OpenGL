@@ -43,4 +43,5 @@ void setFaceNormal(const Vec3& a, const Vec3& b, const Vec3& c);
 
 // --- 모델 / 씬 ---
 void drawPiplup();
+void initGroundTexture(const char* path);
 void drawGround();

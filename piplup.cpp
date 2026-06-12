@@ -1,6 +1,9 @@
 #include "piplup.h"
 #include "body.h"
 #include "face.h"
+#include "stb_image.h"
+
+static GLuint g_groundTex = 0;
 
 // ============================================================
 // 컬러 상수 (reference/README.md 컬러 시스템 기준)
@@ -92,19 +95,55 @@ void drawPiplup() {
 }
 
 // ============================================================
-// 바닥 격자
+// 잔디 바닥
 // ============================================================
-void drawGround() {
-    glDisable(GL_LIGHTING);
-    setColor(0.25f, 0.25f, 0.25f);
-    glBegin(GL_LINES);
-    for (int i = -5; i <= 5; ++i) {
-        glVertex3f((float)i, -1.35f, -5.0f);
-        glVertex3f((float)i, -1.35f,  5.0f);
-        glVertex3f(-5.0f, -1.35f, (float)i);
-        glVertex3f( 5.0f, -1.35f, (float)i);
+void initGroundTexture(const char* path) {
+    int w, h, ch;
+    stbi_set_flip_vertically_on_load(1);
+    unsigned char* data = stbi_load(path, &w, &h, &ch, 4);
+    if (!data) {
+        return;
     }
+
+    glGenTextures(1, &g_groundTex);
+    glBindTexture(GL_TEXTURE_2D, g_groundTex);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    stbi_image_free(data);
+}
+
+void drawGround() {
+    const float groundY = -1.37f;
+    const float size = 18.0f;
+    const float repeat = 7.0f;
+
+    glPushAttrib(GL_ENABLE_BIT | GL_TEXTURE_BIT | GL_CURRENT_BIT);
+    glDisable(GL_LIGHTING);
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+    if (g_groundTex) {
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, g_groundTex);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    } else {
+        glDisable(GL_TEXTURE_2D);
+        setColor(0.32f, 0.60f, 0.16f);
+    }
+
+    glBegin(GL_QUADS);
+    glNormal3f(0.0f, 1.0f, 0.0f);
+    glTexCoord2f(0.0f, 0.0f);       glVertex3f(-size, groundY, -size);
+    glTexCoord2f(repeat, 0.0f);      glVertex3f( size, groundY, -size);
+    glTexCoord2f(repeat, repeat);    glVertex3f( size, groundY,  size);
+    glTexCoord2f(0.0f, repeat);      glVertex3f(-size, groundY,  size);
     glEnd();
+
+    glPopAttrib();
+
     if (enableLighting) {
         glEnable(GL_LIGHTING);
     }

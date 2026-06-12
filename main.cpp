@@ -1,5 +1,6 @@
 #include "piplup.h"
 #include "face.h"
+#include "stb_image.h"
 
 // 카메라와 모델 회전에 필요한 전역 상태값들.
 // GLUT의 콜백 함수(display, keyboard, mouse 등)는 전역 함수 형태로 등록되므로,
@@ -28,6 +29,93 @@ int lastMouseY = 0;
 // false면 조명 없이 순색으로 렌더링한다.
 bool enableLighting = true;
 
+// 배경 이미지 텍스처 상태.
+static GLuint backgroundTexture = 0;
+static int backgroundImageWidth = 1;
+static int backgroundImageHeight = 1;
+static int windowWidth = 800;
+static int windowHeight = 700;
+
+// 화면 배경으로 사용할 PNG 이미지를 OpenGL 텍스처로 올린다.
+void initBackgroundTexture(const char* path) {
+    int w, h, ch;
+    stbi_set_flip_vertically_on_load(1);
+    unsigned char* data = stbi_load(path, &w, &h, &ch, 4);
+    if (!data) {
+        return;
+    }
+
+    backgroundImageWidth = w;
+    backgroundImageHeight = h;
+
+    glGenTextures(1, &backgroundTexture);
+    glBindTexture(GL_TEXTURE_2D, backgroundTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    stbi_image_free(data);
+}
+
+// 3D 모델을 그리기 전에 화면 전체에 배경 이미지를 먼저 렌더링한다.
+void drawBackground() {
+    if (!backgroundTexture || windowWidth <= 0 || windowHeight <= 0) {
+        return;
+    }
+
+    float windowAspect = (float)windowWidth / (float)windowHeight;
+    float imageAspect = (float)backgroundImageWidth / (float)backgroundImageHeight;
+
+    float u0 = 0.0f;
+    float u1 = 1.0f;
+    float v0 = 0.0f;
+    float v1 = 1.0f;
+
+    // CSS background-size: cover처럼 비율을 유지하고 넘치는 축만 중앙 기준으로 잘라낸다.
+    if (windowAspect < imageAspect) {
+        float visibleWidth = windowAspect / imageAspect;
+        u0 = (1.0f - visibleWidth) * 0.5f;
+        u1 = u0 + visibleWidth;
+    } else if (windowAspect > imageAspect) {
+        float visibleHeight = imageAspect / windowAspect;
+        v0 = (1.0f - visibleHeight) * 0.5f;
+        v1 = v0 + visibleHeight;
+    }
+
+    glPushAttrib(GL_ENABLE_BIT | GL_DEPTH_BUFFER_BIT | GL_TEXTURE_BIT | GL_CURRENT_BIT);
+    glDisable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
+    glDisable(GL_LIGHTING);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, backgroundTexture);
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluOrtho2D(0.0, (GLdouble)windowWidth, 0.0, (GLdouble)windowHeight);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(u0, v0); glVertex2f(0.0f, 0.0f);
+    glTexCoord2f(u1, v0); glVertex2f((float)windowWidth, 0.0f);
+    glTexCoord2f(u1, v1); glVertex2f((float)windowWidth, (float)windowHeight);
+    glTexCoord2f(u0, v1); glVertex2f(0.0f, (float)windowHeight);
+    glEnd();
+
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+
+    glPopAttrib();
+}
+
 // 화면을 다시 그려야 할 때 GLUT가 호출하는 콜백 함수.
 // OpenGL 렌더링의 핵심 흐름은 보통 display 함수 안에 들어간다.
 void display() {
@@ -35,6 +123,8 @@ void display() {
     // 색상 버퍼: 이전 프레임의 픽셀 색
     // 깊이 버퍼: 어떤 물체가 앞에 있고 뒤에 있는지 판단하는 z-depth 정보
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    drawBackground();
 
     // 이제부터 카메라/모델 변환을 설정하겠다는 뜻이다.
     glMatrixMode(GL_MODELVIEW);
@@ -59,7 +149,7 @@ void display() {
         glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
     }
 
-    // 바닥 격자를 먼저 그린다.
+    // 산/하늘 배경 위에 3D 잔디 바닥을 먼저 그린다.
     drawGround();
 
     // 모델 전체 회전.
@@ -82,6 +172,9 @@ void reshape(int width, int height) {
     if (height == 0) {
         height = 1;
     }
+
+    windowWidth = width;
+    windowHeight = height;
 
     // OpenGL이 그릴 영역을 창 전체로 설정한다.
     glViewport(0, 0, width, height);
@@ -236,6 +329,12 @@ int main(int argc, char** argv) {
 
     // 머리 텍스처 로드 (앞면 + 뒷면)
     initHeadTexture("reference/head.png", "reference/head_back.png");
+
+    // 바닥 잔디 텍스처 로드
+    initGroundTexture("reference/bg_grass.png");
+
+    // 첨부한 배경 이미지를 화면 배경 텍스처로 로드
+    initBackgroundTexture("reference/bg_pokemon.png");
 
     // GLUT 콜백 등록.
     // 특정 이벤트가 발생하면 아래 함수들이 자동으로 호출된다.
